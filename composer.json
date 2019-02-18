@@ -1,5 +1,5 @@
 {
-    "name": "pzs/nav-online-invoice",
+    "name": "cheppers/nav-online-invoice",
     "description": "A PHP interface for Online Invoice Data Reporting of Hungarian Tax Office (NAV)",
     "license": "MIT",
     "autoload": {
