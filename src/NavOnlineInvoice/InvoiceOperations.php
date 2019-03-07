@@ -60,11 +60,11 @@ class InvoiceOperations {
      * @return int                      A beszúrt művelet sorszáma (index)
      * @throws \Exception
      */
-    public function add(\SimpleXMLElement $xml, $operation = "CREATE") {
+    public function add(string $xml, $operation = "CREATE") {
 
         // XSD validálás
         if ($this->config->validateDataSchema) {
-            Xsd::validate($xml->asXML(), $this->config->getDataXsdFilename());
+            Xsd::validate($xml, $this->config->getDataXsdFilename());
         }
 
         // TODO: ezt esetleg átmozgatni a Reporter vagy ManageInvoiceRequestXml osztályba?
@@ -127,11 +127,10 @@ class InvoiceOperations {
 
     /**
      * XML objektum konvertálása base64-es szöveggé
-     * @param \SimpleXMLElement $xml
+     * @param string $xml
      * @return string
      */
-    protected function convertXml(\SimpleXMLElement $xml) {
-        $xml = $xml->asXML();
+    protected function convertXml(string $xml) {
         return base64_encode($xml);
     }
 

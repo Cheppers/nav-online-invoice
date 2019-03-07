@@ -1,14 +1,11 @@
 <?php
 
-use NavOnlineInvoice\BaseRequestXml;
-
-
 class InvoiceOperationsTest extends BaseTest {
 
     public function testValidation1() {
         $invoices = new NavOnlineInvoice\InvoiceOperations($this->getConfig());
 
-        $invoices->add(simplexml_load_file(TEST_DATA_DIR . "invoice1.xml"));
+        $invoices->add(file_get_contents(TEST_DATA_DIR . "invoice1.xml"));
         $this->addToAssertionCount(1);
     }
 
@@ -19,7 +16,7 @@ class InvoiceOperationsTest extends BaseTest {
     public function testValidation2() {
         $invoices = new NavOnlineInvoice\InvoiceOperations($this->getConfig());
 
-        $invoices->add(simplexml_load_file(TEST_DATA_DIR . "invoice1_invalid.xml"));
+        $invoices->add(file_get_contents(TEST_DATA_DIR . "invoice1_invalid.xml"));
     }
 
 
@@ -28,7 +25,7 @@ class InvoiceOperationsTest extends BaseTest {
         $config->useDataSchemaValidation(false);
         $invoices = new NavOnlineInvoice\InvoiceOperations($config);
 
-        $invoices->add(simplexml_load_file(TEST_DATA_DIR . "invoice1_invalid.xml"));
+        $invoices->add(file_get_contents(TEST_DATA_DIR . "invoice1_invalid.xml"));
         $this->addToAssertionCount(1);
     }
 
@@ -41,7 +38,7 @@ class InvoiceOperationsTest extends BaseTest {
         $config->setVersion('1.1');
         $invoices = new NavOnlineInvoice\InvoiceOperations($config);
 
-        $invoices->add(simplexml_load_file(TEST_DATA_DIR . "invoice1.xml"));
+        $invoices->add(file_get_contents(TEST_DATA_DIR . "invoice1.xml"));
     }
 
 
@@ -50,7 +47,7 @@ class InvoiceOperationsTest extends BaseTest {
         $config->setVersion('1.1');
         $invoices = new NavOnlineInvoice\InvoiceOperations($config);
 
-        $invoices->add(simplexml_load_file(TEST_DATA_DIR . "invoice3.xml"));
+        $invoices->add(file_get_contents(TEST_DATA_DIR . "invoice3.xml"));
         $this->addToAssertionCount(1);
     }
 

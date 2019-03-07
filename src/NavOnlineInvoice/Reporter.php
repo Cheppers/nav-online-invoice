@@ -45,7 +45,7 @@ class Reporter {
      *
      * A `technicalAnnulment` flag értéke automatikusan felismert és beállításra kerül az `operation` értékéből.
      *
-     * @param  InvoiceOperations|\SimpleXMLElement $invoiceOperationsOrXml
+     * @param  InvoiceOperations|string $invoiceOperationsOrXml
      * @param  string                             $operation
      * @return string                             $transactionId
      */

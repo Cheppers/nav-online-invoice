@@ -1,11 +1,11 @@
 <?php
 
 namespace NavOnlineInvoice;
+
 use Exception;
 
-
-class Config {
-
+class Config implements ConfigInterface
+{
     public $user;
     public $software;
 
@@ -19,16 +19,24 @@ class Config {
 
     public $apiVersion = '1.0';
 
+    /**
+     * This data is used to store additional information that can be accessed from this config.
+     * It is a good place to pass additional data that should be accessible throughout the requests.
+     *
+     * @var array $additionalData
+     */
+    public $additionalData = [];
 
     /**
      * NavOnlineInvoice Reporter osztály számára szükséges konfigurációs objektum készítése
      *
-     * @param string       $baseUrl  NAV API URL
-     * @param array|string $user     User data array vagy json fájlnév
+     * @param string $baseUrl NAV API URL
+     * @param array|string $user User data array vagy json fájlnév
      * @param array|string $software Software data array vagy json fájlnév
      * @throws \Exception
      */
-    function __construct($baseUrl, $user, $software = null) {
+    public function __construct($baseUrl, $user, $software = null)
+    {
 
         if (!$baseUrl) {
             throw new Exception("A baseUrl paraméter megadása kötelező!");
@@ -55,77 +63,114 @@ class Config {
         }
     }
 
-
     /**
-     * NAV online számla API eléréséhez használt URL
-     *
-     * Teszt: https://api-test.onlineszamla.nav.gov.hu/invoiceService
-     * Éles: https://api.onlineszamla.nav.gov.hu/invoiceService
-     *
-     * @param string $baseUrl  NAV eléréséhez használt környezet
+     * {@inheritdoc}
      */
-    public function setBaseUrl($baseUrl) {
+    public function setBaseUrl($baseUrl)
+    {
         $this->baseUrl = $baseUrl;
     }
 
-
     /**
-     * NAV szerverrel való kommunikáció előtt ellenőrizze az XML adatot az API sémával szemben
-     *
-     * @param  boolean $flag
+     * {@inheritdoc}
      */
-    public function useApiSchemaValidation($flag = true) {
+    public function useApiSchemaValidation($flag = true)
+    {
         $this->validateApiSchema = $flag;
     }
 
-
     /**
-     * NAV szerverrel való kommunikáció előtt ellenőrizze az XML adatot az Data sémával szemben
-     *
-     * @param  boolean $flag
+     * {@inheritdoc}
      */
-    public function useDataSchemaValidation($flag = true) {
+    public function useDataSchemaValidation($flag = true)
+    {
         $this->validateDataSchema = $flag;
     }
 
-
     /**
-     *
-     * @param array $data
+     * {@inheritdoc}
      */
-    public function setSoftware($data) {
+    public function setSoftware($data)
+    {
         $this->software = $data;
     }
 
-
     /**
-     *
-     * @param  string $jsonFile JSON file name
+     * {@inheritdoc}
      */
-    public function loadSoftware($jsonFile) {
+    public function loadSoftware($jsonFile)
+    {
         $data = $this->loadJsonFile($jsonFile);
         $this->setSoftware($data);
     }
 
-
     /**
-     *
-     * @param array $data
+     * {@inheritdoc}
      */
-    public function setUser($data) {
+    public function setUser($data)
+    {
         $this->user = $data;
     }
 
 
     /**
-     *
-     * @param  string $jsonFile JSON file name
+     * {@inheritdoc}
      */
-    public function loadUser($jsonFile) {
+    public function loadUser($jsonFile)
+    {
         $data = $this->loadJsonFile($jsonFile);
         $this->setUser($data);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function setCurlTimeout($timeoutSeconds)
+    {
+        $this->curlTimeout = $timeoutSeconds;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setVersion($version)
+    {
+        $this->apiVersion = $version;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setAdditionalData(array $data)
+    {
+        $this->additionalData = $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAdditionalData()
+    {
+        return $this->additionalData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVersionDir()
+    {
+        return str_replace('.', '_', $this->apiVersion);
+    }
+
+    public function getDataXsdFilename()
+    {
+        return __DIR__ . '/xsd/' . $this->getVersionDir() . '/invoiceData.xsd';
+    }
+
+    public function getApiXsdFilename()
+    {
+        return __DIR__ . '/xsd/' . $this->getVersionDir() . '/invoiceApi.xsd';
+    }
 
     /**
      * JSON fájl betöltése
@@ -134,7 +179,8 @@ class Config {
      * @return array
      * @throws \Exception
      */
-    protected function loadJsonFile($jsonFile) {
+    protected function loadJsonFile($jsonFile)
+    {
         if (!file_exists($jsonFile)) {
             throw new Exception("A megadott json fájl nem létezik: $jsonFile");
         }
@@ -148,46 +194,4 @@ class Config {
 
         return $data;
     }
-
-
-    /**
-     * cURL hívásnál timeout beállítása másodpercekben.
-     * null vagy 0 esetén nincs explicit timeout beállítás
-     *
-     * @param null|int $timeoutSeconds
-     */
-    public function setCurlTimeout($timeoutSeconds) {
-        $this->curlTimeout = $timeoutSeconds;
-    }
-
-
-    /**
-     * API verzió beállítása.
-     *
-     * @param string $version
-     */
-    public function setVersion($version) {
-        $this->apiVersion = $version;
-    }
-
-
-    /**
-     * API verzió mappa visszaadása.
-     *
-     * @return string
-     */
-    public function getVersionDir() {
-        return str_replace('.', '_', $this->apiVersion);
-    }
-
-
-    public function getDataXsdFilename() {
-        return __DIR__ . '/xsd/' . $this->getVersionDir() . '/invoiceData.xsd';
-    }
-
-
-    public function getApiXsdFilename() {
-        return __DIR__ . '/xsd/' . $this->getVersionDir() . '/invoiceApi.xsd';
-    }
-
 }
