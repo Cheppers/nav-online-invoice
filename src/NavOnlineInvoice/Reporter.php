@@ -32,6 +32,18 @@ class Reporter {
 
 
     /**
+     * Egyedi connector osztály kikérése.
+     * Alap esetben a beépített Connectort használjuk.
+     * A tesztelést is megkönnyíti, hiszen így a Connector osztály mockolható.
+     *
+     * @return ConnectorInterface
+     */
+    public function getConnector() {
+        return $this->connector;
+    }
+
+
+    /**
      * manageInvoice operáció (1.9.1 fejezet)
      *
      * A /manageInvoice a számla adatszolgáltatás beküldésére szolgáló operáció, ezen keresztül van
