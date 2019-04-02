@@ -6,6 +6,7 @@ class Reporter {
 
     protected $connector;
     protected $config;
+    protected $token;
 
 
     /**
@@ -44,6 +45,24 @@ class Reporter {
 
 
     /**
+     * Token értékének beállítása.
+     */
+    public function setToken(string $token) {
+        $this->token = $token;
+    }
+
+
+    /**
+     * Token értékének visszaadása.
+     *
+     * @return string
+     */
+    public function getToken() {
+        return $this->token;
+    }
+
+
+    /**
      * manageInvoice operáció (1.9.1 fejezet)
      *
      * A /manageInvoice a számla adatszolgáltatás beküldésére szolgáló operáció, ezen keresztül van
@@ -72,9 +91,11 @@ class Reporter {
             $invoiceOperations->add($invoiceOperationsOrXml, $operation);
         }
 
-        $token = $this->tokenExchange();
+        if (empty($this->token)) {
+            $this->token = $this->tokenExchange();
+        }
 
-        $requestXml = new ManageInvoiceRequestXml($this->config, $invoiceOperations, $token);
+        $requestXml = new ManageInvoiceRequestXml($this->config, $invoiceOperations, $this->token);
         $responseXml = $this->connector->post("/manageInvoice", $requestXml);
 
         return (string)$responseXml->transactionId;
