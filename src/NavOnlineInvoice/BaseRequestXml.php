@@ -134,7 +134,16 @@ class BaseRequestXml {
      */
     protected function getRequestSignatureHash() {
         $string = $this->getRequestSignatureString();
-        $hash = Util::sha512($string);
+        switch ($this->config->apiVersion) {
+            default:
+            case '1.0':
+            case '1.1':
+                $hash = Util::sha512($string);
+                break;
+            case '2.0':
+                $hash = Util::sha3dash512($string);
+                break;
+        }
         return $hash;
     }
 
