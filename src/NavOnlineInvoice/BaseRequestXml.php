@@ -84,7 +84,18 @@ class BaseRequestXml {
 
 
     protected function getInitialXmlString() {
-        return '<?xml version="1.0" encoding="UTF-8"?><' . $this->rootName . ' xmlns="http://schemas.nav.gov.hu/OSA/1.0/api"></' . $this->rootName . '>';
+        switch ($this->config->apiVersion) {
+            default:
+            case '1.0':
+            case '1.1':
+                $xmlns = 'http://schemas.nav.gov.hu/OSA/1.0/api';
+                break;
+            case '2.0':
+                $xmlns = 'http://schemas.nav.gov.hu/OSA/2.0/api';
+                break;
+        }
+
+        return '<?xml version="1.0" encoding="UTF-8"?><' . $this->rootName . ' xmlns="' . $xmlns . '"></' . $this->rootName . '>';
     }
 
 
