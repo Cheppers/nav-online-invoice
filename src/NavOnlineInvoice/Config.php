@@ -136,6 +136,10 @@ class Config implements ConfigInterface
     public function setVersion($version)
     {
         $this->apiVersion = $version;
+
+        if ((float)$this->apiVersion >= 2 && empty($this->software)) {
+            throw new Exception("Api v2.0-tól kötelező megadni a szoftver-adatokat!");
+        }
     }
 
     /**
