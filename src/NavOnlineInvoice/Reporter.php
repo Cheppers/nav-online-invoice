@@ -134,8 +134,33 @@ class Reporter {
      * @return \SimpleXMLElement  $responseXml    A teljes visszakapott XML, melyből a 'processingResults' elem releváns
      */
     public function queryInvoiceStatus($transactionId, $returnOriginalRequest = false) {
+        if ((float)$this->config->apiVersion >= 2) {
+            throw new UnsupportedMethodException('Method not supported from 2.0');
+        }
+
         $requestXml = new QueryInvoiceStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
         $responseXml = $this->connector->post("/queryInvoiceStatus", $requestXml);
+
+        return $responseXml;
+    }
+
+    /**
+     * queryTransactionStatus operáció (API 2.0)
+     *
+     * A /queryTransactionStatus a számla adatszolgáltatás feldolgozás aktuális állapotának és eredményének
+     * lekérdezésére szolgáló operáció.
+     *
+     * @param  string  $transactionId
+     * @param  boolean $returnOriginalRequest
+     * @return \SimpleXMLElement  $responseXml    A teljes visszakapott XML, melyből a 'processingResults' elem releváns
+     */
+    public function queryTransactionStatus($transactionId, $returnOriginalRequest = false) {
+        if ((float)$this->config->apiVersion < 2) {
+            throw new UnsupportedMethodException('Method not supported in 1.x');
+        }
+
+        $requestXml = new QueryTransactionStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
+        $responseXml = $this->connector->post("/queryTransactionStatus", $requestXml);
 
         return $responseXml;
     }
