@@ -135,7 +135,7 @@ class Reporter {
      */
     public function queryInvoiceStatus($transactionId, $returnOriginalRequest = false) {
         if ((float)$this->config->apiVersion >= 2) {
-            throw new UnsupportedMethodException('Method not supported from 2.0');
+            throw new UnsupportedMethodException('Method not supported from v2.0');
         }
 
         $requestXml = new QueryInvoiceStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
@@ -156,7 +156,7 @@ class Reporter {
      */
     public function queryTransactionStatus($transactionId, $returnOriginalRequest = false) {
         if ((float)$this->config->apiVersion < 2) {
-            throw new UnsupportedMethodException('Method not supported in 1.x');
+            throw new UnsupportedMethodException('Method not supported in v1.x');
         }
 
         $requestXml = new QueryTransactionStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
