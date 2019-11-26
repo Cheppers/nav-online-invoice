@@ -2,6 +2,10 @@
 
 namespace NavOnlineInvoice;
 
+use \NavOnlineInvoice\Exceptions\CurlError;
+use \NavOnlineInvoice\Exceptions\GeneralErrorResponse;
+use \NavOnlineInvoice\Exceptions\GeneralExceptionResponse;
+use \NavOnlineInvoice\Exceptions\HttpResponseError;
 
 class Connector implements ConnectorInterface {
 

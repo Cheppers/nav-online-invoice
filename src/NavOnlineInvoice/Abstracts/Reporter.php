@@ -4,6 +4,8 @@ namespace NavOnlineInvoice\Abstracts;
 
 use NavOnlineInvoice\Connector;
 use NavOnlineInvoice\ConnectorInterface;
+use NavOnlineInvoice\Exceptions\UnsupportedMethodException;
+use NavOnlineInvoice\Exceptions\XsdValidationError;
 use NavOnlineInvoice\InvoiceOperations;
 use NavOnlineInvoice\ManageInvoiceRequestXml;
 use NavOnlineInvoice\QueryInvoiceDataRequestXml;
@@ -11,10 +13,8 @@ use NavOnlineInvoice\QueryInvoiceStatusRequestXml;
 use NavOnlineInvoice\QueryTaxpayerRequestXml;
 use NavOnlineInvoice\QueryTransactionStatusRequestXml;
 use NavOnlineInvoice\TokenExchangeRequestXml;
-use NavOnlineInvoice\UnsupportedMethodException;
 use NavOnlineInvoice\Util;
 use NavOnlineInvoice\Xsd;
-use NavOnlineInvoice\XsdValidationError;
 
 abstract class Reporter {
 
@@ -246,7 +246,7 @@ abstract class Reporter {
     public function getInvoiceValidationError($xml) {
         try {
             Xsd::validate($xml->asXML(), $this->config->getDataXsdFilename());
-        } catch(XsdValidationError $ex) {
+        } catch (XsdValidationError $ex) {
             return $ex->getMessage();
         }
         return null;

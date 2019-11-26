@@ -2,6 +2,7 @@
 
 namespace NavOnlineInvoice;
 use DOMDocument;
+use NavOnlineInvoice\Exceptions\XsdValidationError;
 
 
 class Xsd {

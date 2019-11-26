@@ -11,7 +11,7 @@ class InvoiceOperationsTest extends BaseTest {
 
 
     public function testValidation2() {
-        $this->expectException(NavOnlineInvoice\XsdValidationError::class);
+        $this->expectException(NavOnlineInvoice\Exceptions\XsdValidationError::class);
 
         $invoices = new NavOnlineInvoice\InvoiceOperations($this->getConfig());
 
@@ -30,7 +30,7 @@ class InvoiceOperationsTest extends BaseTest {
 
 
     public function testValidation4() {
-        $this->expectException(NavOnlineInvoice\XsdValidationError::class);
+        $this->expectException(NavOnlineInvoice\Exceptions\XsdValidationError::class);
 
         $config = $this->getConfig();
         $config->setVersion('1.1');

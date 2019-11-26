@@ -1,6 +1,6 @@
 <?php
 
-namespace NavOnlineInvoice;
+namespace NavOnlineInvoice\Exceptions;
 
 class GeneralErrorResponse extends BaseExceptionResponse {
 

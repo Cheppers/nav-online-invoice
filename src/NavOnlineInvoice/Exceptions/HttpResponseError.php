@@ -1,8 +1,8 @@
 <?php
 
-namespace NavOnlineInvoice;
-use Exception;
+namespace NavOnlineInvoice\Exceptions;
 
+use Exception;
 
 class HttpResponseError extends Exception {
 

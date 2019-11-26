@@ -1,6 +1,7 @@
 <?php
 
-namespace NavOnlineInvoice;
+namespace NavOnlineInvoice\Exceptions;
+
 use Exception;
 
 
