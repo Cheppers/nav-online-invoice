@@ -37,7 +37,9 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
     protected function addInvoiceOperations() {
         $operationsXml = $this->xml->addChild("invoiceOperations");
 
-        $operationsXml->addChild("technicalAnnulment", $this->invoiceOperations->getTechnicalAnnulment());
+        if ((float)$this->config->apiVersion < 2) {
+            $operationsXml->addChild("technicalAnnulment", $this->invoiceOperations->getTechnicalAnnulment());
+        }
 
         // NOTE: the compression is currently not supported
         $operationsXml->addChild("compressedContent", false);
@@ -47,8 +49,18 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
             $invoiceXml = $operationsXml->addChild("invoiceOperation");
 
             $invoiceXml->addChild("index", $invoice["index"]);
-            $invoiceXml->addChild("operation", $invoice["operation"]);
-            $invoiceXml->addChild("invoice", $invoice["invoice"]);
+            switch ($this->config->apiVersion) {
+                default:
+                case '1.0':
+                case '1.1':
+                    $invoiceXml->addChild("operation", $invoice["operation"]);
+                    $invoiceXml->addChild("invoice", $invoice["invoice"]);
+                    break;
+                case '2.0':
+                    $invoiceXml->addChild("invoiceOperation", $invoice["operation"]);
+                    $invoiceXml->addChild("invoiceData", $invoice["invoice"]);
+                    break;
+            }
         }
     }
 
@@ -63,7 +75,16 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
 
         // A számlák CRC32 decimális értékének hozzáfűzése
         foreach ($this->invoiceOperations->getInvoices() as $invoice) {
-            $string .= Util::crc32($invoice["invoice"]);
+            switch ($this->config->apiVersion) {
+                default:
+                case '1.0':
+                case '1.1':
+                    $string .= Util::crc32($invoice["invoice"]);
+                    break;
+                case '2.0':
+                    $string .= Util::sha3dash512($invoice["operation"] . $invoice["invoice"]);
+                    break;
+            }
         }
 
         return $string;
