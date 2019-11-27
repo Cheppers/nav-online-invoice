@@ -1,0 +1,75 @@
+<?php
+
+namespace NavOnlineInvoice\Api20;
+
+use NavOnlineInvoice\Util;
+
+class ManageInvoiceRequestXml extends BaseRequestXml {
+
+    protected $invoiceOperations;
+    protected $token;
+
+
+    /**
+     * @param Config $config
+     * @param InvoiceOperations $invoiceOperations
+     * @param string $token
+     */
+    function __construct($config, $invoiceOperations, $token) {
+        $this->invoiceOperations = $invoiceOperations;
+        $this->token = $token;
+
+        parent::__construct("ManageInvoiceRequest", $config);
+    }
+
+
+    protected function createXml() {
+        parent::createXml();
+        $this->addToken();
+        $this->addInvoiceOperations();
+    }
+
+
+    protected function addToken() {
+        $this->xml->addChild("exchangeToken", $this->token);
+    }
+
+
+    protected function addInvoiceOperations() {
+        $operationsXml = $this->xml->addChild("invoiceOperations");
+
+        if ((float)$this->config->apiVersion < 2) {
+            $operationsXml->addChild("technicalAnnulment", $this->invoiceOperations->getTechnicalAnnulment());
+        }
+
+        // NOTE: the compression is currently not supported
+        $operationsXml->addChild("compressedContent", false);
+
+        // Számlák hozzáadása az XML-hez
+        foreach ($this->invoiceOperations->getInvoices() as $invoice) {
+            $invoiceXml = $operationsXml->addChild("invoiceOperation");
+
+            $invoiceXml->addChild("index", $invoice["index"]);
+
+            $invoiceXml->addChild("invoiceOperation", $invoice["operation"]);
+            $invoiceXml->addChild("invoiceData", $invoice["invoice"]);
+        }
+    }
+
+
+    /**
+     * Aláírás hash értékének számításához string-ek összefűzése és visszaadása
+     *
+     * Kapcsolódó fejezet: 1.5 A requestSignature számítása
+     */
+    protected function getRequestSignatureString() {
+        $string = parent::getRequestSignatureString();
+
+        foreach ($this->invoiceOperations->getInvoices() as $invoice) {
+            $string .= Util::sha3dash512($invoice["operation"] . $invoice["invoice"]);
+        }
+
+        return $string;
+    }
+
+}

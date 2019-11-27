@@ -1,6 +1,6 @@
 <?php
 
-namespace NavOnlineInvoice;
+namespace NavOnlineInvoice\Api11;
 
 
 class QueryInvoiceStatusRequestXml extends BaseRequestXml {

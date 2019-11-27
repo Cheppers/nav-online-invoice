@@ -7,7 +7,7 @@ use NavOnlineInvoice\ConnectorInterface;
 use NavOnlineInvoice\Exceptions\UnsupportedMethodException;
 use NavOnlineInvoice\Exceptions\XsdValidationError;
 use NavOnlineInvoice\InvoiceOperations;
-use NavOnlineInvoice\ManageInvoiceRequestXml;
+//use NavOnlineInvoice\ManageInvoiceRequestXml;
 use NavOnlineInvoice\QueryInvoiceDataRequestXml;
 use NavOnlineInvoice\QueryInvoiceStatusRequestXml;
 use NavOnlineInvoice\QueryTaxpayerRequestXml;
@@ -94,26 +94,7 @@ abstract class Reporter {
      * @param  string                             $operation
      * @return string                             $transactionId
      */
-    public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE") {
-
-        // Ha nem InvoiceOperations példányt adtak át, akkor azzá konvertáljuk
-        if ($invoiceOperationsOrXml instanceof InvoiceOperations) {
-            $invoiceOperations = $invoiceOperationsOrXml;
-        } else {
-            $invoiceOperations = new InvoiceOperations($this->config);
-
-            $invoiceOperations->add($invoiceOperationsOrXml, $operation);
-        }
-
-        if (empty($this->token)) {
-            $this->token = $this->tokenExchange();
-        }
-
-        $requestXml = new ManageInvoiceRequestXml($this->config, $invoiceOperations, $this->token);
-        $responseXml = $this->connector->post("/manageInvoice", $requestXml);
-
-        return (string)$responseXml->transactionId;
-    }
+    abstract public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE");
 
 
     /**

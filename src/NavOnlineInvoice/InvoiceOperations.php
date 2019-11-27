@@ -30,7 +30,7 @@ class InvoiceOperations {
     /**
      * Számlákat (számla műveleteket) összefogó objektum (collection) készítése
      */
-    function __construct(Config $config) {
+    function __construct(\NavOnlineInvoice\Abstracts\Config $config) {
         $this->invoices = array();
         $this->index = 1;
         $this->config = $config;

@@ -1,7 +1,8 @@
 <?php
 
-namespace NavOnlineInvoice;
+namespace NavOnlineInvoice\Api11;
 
+use NavOnlineInvoice\Util;
 
 class ManageInvoiceRequestXml extends BaseRequestXml {
 
@@ -49,18 +50,9 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
             $invoiceXml = $operationsXml->addChild("invoiceOperation");
 
             $invoiceXml->addChild("index", $invoice["index"]);
-            switch ($this->config->apiVersion) {
-                default:
-                case '1.0':
-                case '1.1':
-                    $invoiceXml->addChild("operation", $invoice["operation"]);
-                    $invoiceXml->addChild("invoice", $invoice["invoice"]);
-                    break;
-                case '2.0':
-                    $invoiceXml->addChild("invoiceOperation", $invoice["operation"]);
-                    $invoiceXml->addChild("invoiceData", $invoice["invoice"]);
-                    break;
-            }
+
+            $invoiceXml->addChild("operation", $invoice["operation"]);
+            $invoiceXml->addChild("invoice", $invoice["invoice"]);
         }
     }
 
@@ -75,16 +67,7 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
 
         // A számlák CRC32 decimális értékének hozzáfűzése
         foreach ($this->invoiceOperations->getInvoices() as $invoice) {
-            switch ($this->config->apiVersion) {
-                default:
-                case '1.0':
-                case '1.1':
-                    $string .= Util::crc32($invoice["invoice"]);
-                    break;
-                case '2.0':
-                    $string .= Util::sha3dash512($invoice["operation"] . $invoice["invoice"]);
-                    break;
-            }
+            $string .= Util::sha3dash512($invoice["operation"] . $invoice["invoice"]);
         }
 
         return $string;

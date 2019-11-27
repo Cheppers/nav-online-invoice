@@ -3,7 +3,7 @@
 namespace NavOnlineInvoice\Api11;
 
 use NavOnlineInvoice\Abstracts\Reporter as ReporterAbstract;
-use NavOnlineInvoice\QueryInvoiceStatusRequestXml;
+use NavOnlineInvoice\InvoiceOperations;
 
 class Reporter extends ReporterAbstract
 {
@@ -22,5 +22,26 @@ class Reporter extends ReporterAbstract
         $responseXml = $this->connector->post("/queryInvoiceStatus", $requestXml);
 
         return $responseXml;
+    }
+
+    public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE") {
+
+        // Ha nem InvoiceOperations példányt adtak át, akkor azzá konvertáljuk
+        if ($invoiceOperationsOrXml instanceof InvoiceOperations) {
+            $invoiceOperations = $invoiceOperationsOrXml;
+        } else {
+            $invoiceOperations = new InvoiceOperations($this->config);
+
+            $invoiceOperations->add($invoiceOperationsOrXml, $operation);
+        }
+
+        if (empty($this->token)) {
+            $this->token = $this->tokenExchange();
+        }
+
+        $requestXml = new ManageInvoiceRequestXml($this->config, $invoiceOperations, $this->token);
+        $responseXml = $this->connector->post("/manageInvoice", $requestXml);
+
+        return (string)$responseXml->transactionId;
     }
 }
