@@ -32,11 +32,12 @@ abstract class Config implements ConfigInterface
      * NavOnlineInvoice Reporter osztály számára szükséges konfigurációs objektum készítése
      *
      * @param string $baseUrl NAV API URL
+     * @param string $apiVersion NAV API Version
      * @param array|string $user User data array vagy json fájlnév
      * @param array|string $software Software data array vagy json fájlnév
      * @throws \Exception
      */
-    public function __construct($baseUrl, $user, $software = null)
+    public function __construct($baseUrl, $apiVersion, $user, $software = null)
     {
 
         if (!$baseUrl) {
@@ -62,6 +63,8 @@ abstract class Config implements ConfigInterface
                 $this->setSoftware($software);
             }
         }
+
+        $this->setVersion($apiVersion);
     }
 
     /**
