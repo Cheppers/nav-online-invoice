@@ -38,10 +38,6 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
     protected function addInvoiceOperations() {
         $operationsXml = $this->xml->addChild("invoiceOperations");
 
-        if ((float)$this->config->apiVersion < 2) {
-            $operationsXml->addChild("technicalAnnulment", $this->invoiceOperations->getTechnicalAnnulment());
-        }
-
         // NOTE: the compression is currently not supported
         $operationsXml->addChild("compressedContent", false);
 
