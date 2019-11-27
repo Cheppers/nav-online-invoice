@@ -138,49 +138,6 @@ abstract class Reporter {
 
 
     /**
-     * queryInvoiceStatus operáció (1.9.3 fejezet)
-     *
-     * A /queryInvoiceStatus a számla adatszolgáltatás feldolgozás aktuális állapotának és eredményének
-     * lekérdezésére szolgáló operáció.
-     *
-     * @param  string  $transactionId
-     * @param  boolean $returnOriginalRequest
-     * @return \SimpleXMLElement  $responseXml    A teljes visszakapott XML, melyből a 'processingResults' elem releváns
-     */
-    public function queryInvoiceStatus($transactionId, $returnOriginalRequest = false) {
-        if ((float)$this->config->apiVersion >= 2) {
-            throw new UnsupportedMethodException('Method not supported from v2.0');
-        }
-
-        $requestXml = new QueryInvoiceStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
-        $responseXml = $this->connector->post("/queryInvoiceStatus", $requestXml);
-
-        return $responseXml;
-    }
-
-    /**
-     * queryTransactionStatus operáció (API 2.0)
-     *
-     * A /queryTransactionStatus a számla adatszolgáltatás feldolgozás aktuális állapotának és eredményének
-     * lekérdezésére szolgáló operáció.
-     *
-     * @param  string  $transactionId
-     * @param  boolean $returnOriginalRequest
-     * @return \SimpleXMLElement  $responseXml    A teljes visszakapott XML, melyből a 'processingResults' elem releváns
-     */
-    public function queryTransactionStatus($transactionId, $returnOriginalRequest = false) {
-        if ((float)$this->config->apiVersion < 2) {
-            throw new UnsupportedMethodException('Method not supported in v1.x');
-        }
-
-        $requestXml = new QueryTransactionStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
-        $responseXml = $this->connector->post("/queryTransactionStatus", $requestXml);
-
-        return $responseXml;
-    }
-
-
-    /**
      * queryTaxpayer operáció (1.9.4 fejezet)
      *
      * A /queryTaxpayer belföldi adószám validáló operáció, mely a számlakiállítás folyamatába építve képes
