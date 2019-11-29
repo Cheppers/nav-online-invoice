@@ -1,14 +1,11 @@
 <?php
 
-use NavOnlineInvoice\QueryInvoiceStatusRequestXml;
-
-
 class QueryInvoiceStatusRequestXmlTest extends BaseTest {
 
     private function createRequestXmlObject() {
         $transactionId = "abc123";
         $returnOriginalRequest = true;
-        return new QueryInvoiceStatusRequestXml($this->getConfig(), $transactionId, $returnOriginalRequest);
+        return new \NavOnlineInvoice\Api11\QueryInvoiceStatusRequestXml($this->getConfig(), $transactionId, $returnOriginalRequest);
     }
 
 

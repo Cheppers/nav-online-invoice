@@ -1,8 +1,5 @@
 <?php
 
-use NavOnlineInvoice\ManageInvoiceRequestXml;
-
-
 class ManageInvoiceRequestXmlTest extends BaseTest {
 
     private function createRequestXmlObject() {
@@ -10,7 +7,7 @@ class ManageInvoiceRequestXmlTest extends BaseTest {
         $invoices->add(file_get_contents(TEST_DATA_DIR . "invoice1.xml"));
         $token = "token-123";
 
-        return new ManageInvoiceRequestXml($this->getConfig(), $invoices, $token);
+        return new \NavOnlineInvoice\Api11\ManageInvoiceRequestXml($this->getConfig(), $invoices, $token);
     }
 
 
