@@ -145,6 +145,14 @@ abstract class Config implements ConfigInterface
     /**
      * {@inheritdoc}
      */
+    public function getVersion()
+    {
+        return $this->apiVersion;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setAdditionalData(array $data)
     {
         $this->additionalData = $data;

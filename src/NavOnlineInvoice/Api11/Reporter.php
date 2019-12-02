@@ -44,4 +44,23 @@ class Reporter extends ReporterAbstract
 
         return (string)$responseXml->transactionId;
     }
+    /**
+     * queryInvoiceData operáció (1.9.2 fejezet)
+     *
+     * A /queryInvoiceData a számla adatszolgáltatások lekérdezésére szolgáló operáció. A lekérdezés
+     * történhet konkrét számla sorszámra, vagy lekérdezési paraméterek alapján.
+     *
+     * @param  string            $queryType     A queryType értéke lehet 'invoiceQuery' vagy 'queryParams'
+     *                                          függően attól, hogy konktér számla sorszámot, vagy általános
+     *                                          lekérdezési paramétereket adunk át.
+     * @param  array             $queryData     A queryType-nak megfelelően összeállított lekérdezési adatok
+     * @param  Int               $page          Oldalszám (1-től kezdve a számozást)
+     * @return \SimpleXMLElement  $queryResultsXml A válasz XML queryResults része
+     */
+    public function queryInvoiceData($queryType, $queryData, $page = 1) {
+        $requestXml = new QueryInvoiceDataRequestXml($this->config, $queryType, $queryData, $page);
+        $responseXml = $this->connector->post("/queryInvoiceData", $requestXml);
+
+        return $responseXml->queryResults;
+    }
 }
