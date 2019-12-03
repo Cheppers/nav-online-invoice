@@ -45,13 +45,13 @@ class Reporter extends ReporterAbstract
         return (string)$responseXml->transactionId;
     }
 
-    public function manageAnnulment($transactionId)
+    public function manageAnnulment(array $annulmentData = [])
     {
         if (empty($this->token)) {
             $this->token = $this->tokenExchange();
         }
 
-        $requestXml = new ManageAnnulmentRequestXml($this->config, $transactionId, $this->token);
+        $requestXml = new ManageAnnulmentRequestXml($this->config, $annulmentData, $this->token);
 
         $responseXml = $this->connector->post("/manageAnnulment", $requestXml);
 
