@@ -54,7 +54,7 @@ class Reporter extends ReporterAbstract
         $requestXml = new ManageAnnulmentRequestXml($this->config, $annulmentOperations, $this->token);
         $responseXml = $this->connector->post("/manageAnnulment", $requestXml);
 
-        return $responseXml;
+        return (string)$responseXml->transactionId;
     }
     /**
      * queryInvoiceData operáció (1.9.2 fejezet)
