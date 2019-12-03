@@ -18,7 +18,7 @@ class AnnulmentOperations
         $this->config = $config;
     }
 
-    public function add($annulmentData = [], $operation = "ANNUL")
+    public function add(AnnulmentData $annulmentData, $operation = "ANNUL")
     {
         $xml = $this->generateAnnulmentXml($annulmentData);
         
@@ -46,14 +46,14 @@ class AnnulmentOperations
         return $this->annulments;
     }
 
-    private function generateAnnulmentXml($annulmentData = [])
+    private function generateAnnulmentXml(AnnulmentData $annulmentData)
     {
         $annulmentXmlString = '<?xml version="1.0" encoding="UTF-8"?><InvoiceAnnulment xmlns="http://schemas.nav.gov.hu/OSA/2.0/annul"></InvoiceAnnulment>';
         $annulmentXml = new \SimpleXMLElement($annulmentXmlString);
-        $annulmentXml->addChild('annulmentReference', $annulmentData['annulmentReference']);
-        $annulmentXml->addChild('annulmentTimestamp', $annulmentData['annulmentTimestamp']);
-        $annulmentXml->addChild('annulmentCode', $annulmentData['annulmentCode']); // ERRATIC_DATA
-        $annulmentXml->addChild('annulmentReason', $annulmentData['annulmentReason']);
+        $annulmentXml->addChild('annulmentReference', $annulmentData->annulmentReference);
+        $annulmentXml->addChild('annulmentTimestamp', $annulmentData->annulmentTimestamp);
+        $annulmentXml->addChild('annulmentCode', $annulmentData->annulmentCode); // ERRATIC_DATA
+        $annulmentXml->addChild('annulmentReason', $annulmentData->annulmentReason);
 
         return $annulmentXml->asXML();
     }

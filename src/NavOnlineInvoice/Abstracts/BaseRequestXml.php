@@ -72,7 +72,7 @@ abstract class BaseRequestXml {
      *
      * @return string
      */
-    protected function getTimestamp() {
+    public static function getTimestamp() {
         $now = microtime(true);
         $milliseconds = round(($now - floor($now)) * 1000);
         $milliseconds = min($milliseconds, 999);

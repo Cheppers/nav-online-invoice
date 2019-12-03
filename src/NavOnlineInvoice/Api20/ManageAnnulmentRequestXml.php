@@ -7,21 +7,17 @@ use NavOnlineInvoice\Xsd;
 
 class ManageAnnulmentRequestXml extends BaseRequestXml
 {
-    protected $annulments;
     protected $annulmentOperations;
     protected $token;
-    
-    function __construct($config, $annulments, $token) {
-        $this->annulments = $annulments;
+
+    /**
+     * @param Config $config
+     * @param AnnulmentOperations $annulmentOperations
+     * @param string $token
+     */
+    function __construct($config, $annulmentOperations, $token) {
+        $this->annulmentOperations = $annulmentOperations;
         $this->token = $token;
-
-        $this->annulmentOperations = new AnnulmentOperations($config);
-
-        foreach ($this->annulments as $annulmentData) {
-            $annulmentData['annulmentTimestamp'] = $this->getTimestamp();
-
-            $this->annulmentOperations->add($annulmentData);
-        }
 
         parent::__construct("ManageAnnulmentRequest", $config);
     }
