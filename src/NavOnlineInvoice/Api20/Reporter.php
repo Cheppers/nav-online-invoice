@@ -52,7 +52,6 @@ class Reporter extends ReporterAbstract
         }
 
         $requestXml = new ManageAnnulmentRequestXml($this->config, $transactionId, $this->token);
-        //print($requestXml->getXML());
 
         $responseXml = $this->connector->post("/manageAnnulment", $requestXml);
 
