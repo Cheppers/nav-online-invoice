@@ -1,13 +1,15 @@
 <?php
 
 namespace NavOnlineInvoice\Api11;
+
 use \Exception;
+use NavOnlineInvoice\Traits\AddQueryData;
 
-
-class QueryInvoiceDataRequestXml extends BaseRequestXml {
+class QueryInvoiceDataRequestXml extends BaseRequestXml
+{
+    use AddQueryData;
 
     private static $queryTypes = array("invoiceQuery", "queryParams");
-
 
     /**
      * QueryInvoiceDataRequestXml constructor.
@@ -17,7 +19,8 @@ class QueryInvoiceDataRequestXml extends BaseRequestXml {
      * @param $page
      * @throws \Exception
      */
-    function __construct($config, $queryType, $queryData, $page) {
+    public function __construct($config, $queryType, $queryData, $page)
+    {
         if (!in_array($queryType, self::$queryTypes)) {
             throw new Exception("Érvénytelen queryType: $queryType");
         }
@@ -31,18 +34,4 @@ class QueryInvoiceDataRequestXml extends BaseRequestXml {
         $this->xml->addChild("page", $page);
         $this->addQueryData($this->xml, $queryType, $queryData);
     }
-
-
-    protected function addQueryData(\SimpleXMLElement $xmlNode, $type, $data) {
-        $node = $xmlNode->addChild($type);
-
-        foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                $this->addQueryData($node, $key, $value);
-            } else {
-                $node->addChild($key, $value);
-            }
-        }
-    }
-
 }

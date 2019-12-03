@@ -60,15 +60,33 @@ class Reporter extends ReporterAbstract
      * queryInvoiceData operáció (1.9.2 fejezet)
      *
      * A /queryInvoiceData a számla adatszolgáltatások lekérdezésére szolgáló operáció. A lekérdezés
-     * történhet konkrét számla sorszámra, vagy lekérdezési paraméterek alapján.
+     * konkrét számla sorszámra alapján történhet.
      *
-     * @param  array             $queryData     A queryType-nak megfelelően összeállított lekérdezési adatok
+     * @param string $invoiceNumber Számla sorszám
+     * @param string $invoiceDirection Számla iránya: INBOUND|OUTBOUND
      * @return \SimpleXMLElement  $queryResultsXml A válasz XML queryResults része
      */
-    public function queryInvoiceData($queryData) {
-        $requestXml = new QueryInvoiceDataRequestXml($this->config, $queryData);
+    public function queryInvoiceData($invoiceNumber, $invoiceDirection) {
+        $requestXml = new QueryInvoiceDataRequestXml($this->config, $invoiceNumber, $invoiceDirection);
         $responseXml = $this->connector->post("/queryInvoiceData", $requestXml);
 
-        return $responseXml->queryResults;
+        return $responseXml->invoiceDataResult;
+    }
+
+    /**
+     * queryInvoiceDigest operáció (1.9.5 fejezet)
+     *
+     * A /queryInvoiceDigest a számla adatszolgáltatások lekérdezésére szolgáló operáció. A lekérdezés
+     * lekérdezési paraméterek alapján történhet.
+     * @param array $queryData Lekérdezési paraméterek
+     * @param string $invoiceDirection Számla iránya: INBOUND|OUTBOUND
+     * @param int $page A kért lap sorszáma
+     * @return \SimpleXMLElement  $queryResultsXml A válasz XML queryResults része
+     */
+    public function queryInvoiceDigest($invoiceDirection, $queryData, $page = 1)
+    {
+        $requestXml = new QueryInvoiceDigestRequestXml($this->config, $invoiceDirection, $queryData, $page);
+        $responseXml = $this->connector->post('/queryInvoiceDigest', $requestXml);
+        return $responseXml->invoiceDigestResult;
     }
 }
