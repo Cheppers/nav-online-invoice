@@ -65,7 +65,7 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
 
         // A számlák CRC32 decimális értékének hozzáfűzése
         foreach ($this->invoiceOperations->getInvoices() as $invoice) {
-            $string .= Util::sha3dash512($invoice["operation"] . $invoice["invoice"]);
+            $string .= Util::crc32($invoice["invoice"]);
         }
 
         return $string;
