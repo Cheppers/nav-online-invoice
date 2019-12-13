@@ -11,8 +11,8 @@ class QueryInvoiceDigestRequestXml extends BaseRequestXml
     public function __construct($config, $invoiceDirection, $queryData, $page = 1)
     {
         parent::__construct('QueryInvoiceDigestRequest', $config);
-        $this->xml->addChild('InvoiceDirection', $invoiceDirection);
         $this->xml->addChild('page', $page);
+        $this->xml->addChild('invoiceDirection', $invoiceDirection);
         $this->addQueryData($this->xml, 'invoiceQueryParams', $queryData);
     }
 }
