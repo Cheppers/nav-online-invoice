@@ -21,8 +21,8 @@ class QueryInvoiceDataRequestXml extends BaseRequestXml
             $this->xml,
             'invoiceNumberQuery',
             [
-                'InvoiceNumber' => $invoiceNumber,
-                'InvoiceDirection' => $invoiceDirection,
+                'invoiceNumber' => $invoiceNumber,
+                'invoiceDirection' => $invoiceDirection,
             ]
         );
     }
