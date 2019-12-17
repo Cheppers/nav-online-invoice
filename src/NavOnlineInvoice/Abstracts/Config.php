@@ -20,6 +20,9 @@ abstract class Config implements ConfigInterface
 
     public $apiVersion = '1.0';
 
+    public const LIVE_URL = '';
+    public const TEST_URL = '';
+
     /**
      * This data is used to store additional information that can be accessed from this config.
      * It is a good place to pass additional data that should be accessible throughout the requests.
@@ -31,20 +34,18 @@ abstract class Config implements ConfigInterface
     /**
      * NavOnlineInvoice Reporter osztály számára szükséges konfigurációs objektum készítése
      *
-     * @param string $baseUrl NAV API URL
      * @param string $apiVersion NAV API Version
+     * @param boolean $isLive Éles vagy teszt működés
      * @param array|string $user User data array vagy json fájlnév
      * @param array|string $software Software data array vagy json fájlnév
      * @throws \Exception
      */
-    public function __construct($baseUrl, $apiVersion, $user, $software = null)
+    public function __construct($apiVersion, $isLive, $user, $software = null)
     {
-
-        if (!$baseUrl) {
-            throw new Exception("A baseUrl paraméter megadása kötelező!");
+        $this->setBaseUrl(static::TEST_URL);
+        if ($isLive) {
+            $this->setBaseUrl(static::LIVE_URL);
         }
-
-        $this->setBaseUrl($baseUrl);
 
         if (!$user) {
             throw new Exception("A user paraméter megadása kötelező!");

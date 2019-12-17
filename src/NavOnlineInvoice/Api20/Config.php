@@ -7,6 +7,9 @@ use Exception;
 
 class Config extends ConfigAbstract
 {
+    public const LIVE_URL = 'https://api.onlineszamla.nav.gov.hu/invoiceService/v2';
+    public const TEST_URL = 'https://api-test.onlineszamla.nav.gov.hu/invoiceService/v2';
+
     public function setVersion($version)
     {
         parent::setVersion($version);
