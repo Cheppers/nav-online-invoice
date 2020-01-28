@@ -10,6 +10,7 @@ class Config
             return new Api20\Config($apiVersion, $isLive, $user, $software);
         }
 
+        $software = null;
         return new Api11\Config($apiVersion, $isLive, $user, $software);
     }
 }
