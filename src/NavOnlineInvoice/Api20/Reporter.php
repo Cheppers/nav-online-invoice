@@ -91,4 +91,11 @@ class Reporter extends ReporterAbstract
         $responseXml = $this->connector->post('/queryInvoiceDigest', $requestXml);
         return $responseXml->invoiceDigestResult;
     }
+
+    public function queryInvoiceChainDigest($queryData, $page = 1)
+    {
+        $requestXml = new QueryInvoiceChainDigestRequestXml($this->config, $queryData, $page);
+        $responseXml = $this->connector->post('/queryInvoiceChainDigest', $requestXml);
+        return $responseXml->invoiceChainDigestResult;
+    }
 }
