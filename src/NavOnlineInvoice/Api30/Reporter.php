@@ -63,4 +63,12 @@ class Reporter extends ReporterAbstract
         $transactionId = $responseXml->getElementsByTagName('transactionId')->item(0);
         return $transactionId ? $transactionId->nodeValue : null;
     }
+
+    public function queryInvoiceData($invoiceNumber, $invoiceDirection)
+    {
+        $requestXml = new QueryInvoiceDataRequestXml($this->config, $invoiceNumber, $invoiceDirection);
+        $responseXml = $this->connector->post("/queryInvoiceData", $requestXml);
+
+        return $responseXml->getElementsByTagName('invoiceDataResult')->item(0);
+    }
 }

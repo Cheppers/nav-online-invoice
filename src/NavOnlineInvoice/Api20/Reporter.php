@@ -73,13 +73,14 @@ class Reporter extends ReporterAbstract
      *
      * @param string $invoiceNumber Számla sorszám
      * @param string $invoiceDirection Számla iránya: INBOUND|OUTBOUND
-     * @return \SimpleXMLElement  $queryResultsXml A válasz XML queryResults része
+     * @return \DOMNode  $queryResultsXml A válasz XML queryResults része
      */
-    public function queryInvoiceData($invoiceNumber, $invoiceDirection) {
+    public function queryInvoiceData($invoiceNumber, $invoiceDirection)
+    {
         $requestXml = new QueryInvoiceDataRequestXml($this->config, $invoiceNumber, $invoiceDirection);
         $responseXml = $this->connector->post("/queryInvoiceData", $requestXml);
 
-        return $responseXml->invoiceDataResult;
+        return $responseXml->getElementsByTagName('invoiceDataResult')->item(0);
     }
 
     /**
