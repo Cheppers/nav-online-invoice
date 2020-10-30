@@ -4,23 +4,22 @@ namespace NavOnlineInvoice\Exceptions;
 
 use Exception;
 
-abstract class BaseExceptionResponse extends Exception {
-
+abstract class BaseExceptionResponse extends Exception
+{
     protected $xml;
 
-
-    function __construct($xml) {
+    function __construct($xml)
+    {
         $this->xml = $xml;
         $message = $this->getResultMessage();
 
         parent::__construct($message);
     }
 
-
-    public function getXml() {
+    public function getXml()
+    {
         return $this->xml;
     }
-
 
     /**
      * Return the result field of the XML in array format
@@ -28,8 +27,8 @@ abstract class BaseExceptionResponse extends Exception {
      */
     abstract public function getResult();
 
-
-    public function getResultMessage() {
+    public function getResultMessage()
+    {
         $result = $this->getResult();
 
         if (empty($result["message"])) {
@@ -43,8 +42,8 @@ abstract class BaseExceptionResponse extends Exception {
         return $message;
     }
 
-
-    public function getErrorCode() {
+    public function getErrorCode()
+    {
         $result = $this->getResult();
 
         if (isset($result["errorCode"])) {
@@ -53,5 +52,4 @@ abstract class BaseExceptionResponse extends Exception {
 
         return null;
     }
-
 }
