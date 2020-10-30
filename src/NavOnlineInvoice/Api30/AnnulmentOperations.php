@@ -1,6 +1,6 @@
 <?php
 
-namespace NavOnlineInvoice\Api20;
+namespace NavOnlineInvoice\Api30;
 
 use NavOnlineInvoice\Xsd;
 
@@ -50,7 +50,7 @@ class AnnulmentOperations
 
     private function generateAnnulmentXml(AnnulmentData $annulmentData)
     {
-        $annulmentXmlString = '<?xml version="1.0" encoding="UTF-8"?><InvoiceAnnulment xmlns="http://schemas.nav.gov.hu/OSA/2.0/annul"></InvoiceAnnulment>';
+        $annulmentXmlString = '<?xml version="1.0" encoding="UTF-8"?><InvoiceAnnulment xmlns="http://schemas.nav.gov.hu/OSA/3.0/annul"></InvoiceAnnulment>';
         $annulmentXml = new \SimpleXMLElement($annulmentXmlString);
         $annulmentXml->addChild('annulmentReference', $annulmentData->annulmentReference);
         $annulmentXml->addChild('annulmentTimestamp', $annulmentData->annulmentTimestamp);
