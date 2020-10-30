@@ -4,28 +4,32 @@ namespace NavOnlineInvoice\Api20;
 
 use NavOnlineInvoice\Abstracts\Reporter as ReporterAbstract;
 use NavOnlineInvoice\InvoiceOperations;
+use NavOnlineInvoice\TokenExchangeRequestXml;
 
 class Reporter extends ReporterAbstract
 {
-    /**
-     * queryTransactionStatus operáció (API 2.0)
-     *
-     * A /queryTransactionStatus a számla adatszolgáltatás feldolgozás aktuális állapotának és eredményének
-     * lekérdezésére szolgáló operáció.
-     *
-     * @param  string  $transactionId
-     * @param  boolean $returnOriginalRequest
-     * @return \SimpleXMLElement  $responseXml    A teljes visszakapott XML, melyből a 'processingResults' elem releváns
-     */
-    public function queryTransactionStatus($transactionId, $returnOriginalRequest = false) {
+    public function tokenExchange()
+    {
+        $requestXml = new TokenExchangeRequestXml($this->config);
+        $responseXml = $this->connector->post("/tokenExchange", $requestXml);
+
+        $encodedToken = $responseXml->getElementsByTagName('encodedExchangeToken')->item(0);
+        $encodedToken = $encodedToken ? $encodedToken->nodeValue : null;
+        $token = $this->decodeToken($encodedToken);
+
+        return $token;
+    }
+
+    public function queryTransactionStatus($transactionId, $returnOriginalRequest = false)
+    {
         $requestXml = new QueryTransactionStatusRequestXml($this->config, $transactionId, $returnOriginalRequest);
         $responseXml = $this->connector->post("/queryTransactionStatus", $requestXml);
 
         return $responseXml;
     }
 
-    public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE") {
-
+    public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE")
+    {
         // Ha nem InvoiceOperations példányt adtak át, akkor azzá konvertáljuk
         if ($invoiceOperationsOrXml instanceof InvoiceOperations) {
             $invoiceOperations = $invoiceOperationsOrXml;
@@ -42,7 +46,8 @@ class Reporter extends ReporterAbstract
         $requestXml = new ManageInvoiceRequestXml($this->config, $invoiceOperations, $this->token);
         $responseXml = $this->connector->post("/manageInvoice", $requestXml);
 
-        return (string)$responseXml->transactionId;
+        $transactionId = $responseXml->getElementsByTagName('transactionId')->item(0);
+        return $transactionId ? $transactionId->nodeValue : null;
     }
 
     public function manageAnnulment($annulmentOperations, &$requestXmlString = '')
@@ -56,8 +61,10 @@ class Reporter extends ReporterAbstract
         
         $requestXmlString = $requestXml->asXML();
 
-        return (string)$responseXml->transactionId;
+        $transactionId = $responseXml->getElementsByTagName('transactionId')->item(0);
+        return $transactionId ? $transactionId->nodeValue : null;
     }
+
     /**
      * queryInvoiceData operáció (1.9.2 fejezet)
      *
