@@ -25,7 +25,7 @@ class Connector implements ConnectorInterface {
      *
      * @param  string                   $url
      * @param  string|\SimpleXMLElement $requestXml
-     * @return \SimpleXMLElement
+     * @return \DOMDocument
      * @throws \NavOnlineInvoice\CurlError
      * @throws \NavOnlineInvoice\HttpResponseError
      * @throws \NavOnlineInvoice\GeneralExceptionResponse
@@ -59,22 +59,23 @@ class Connector implements ConnectorInterface {
             throw new HttpResponseError($result, $httpStatusCode);
         }
 
-        if ($responseXml->getName() === "GeneralExceptionResponse") {
+        if ($responseXml->documentElement->localName === "GeneralExceptionResponse") {
             throw new GeneralExceptionResponse($responseXml);
         }
 
-        if ($responseXml->getName() === "GeneralErrorResponse") {
+        if ($responseXml->documentElement->localName === "GeneralErrorResponse") {
             throw new GeneralErrorResponse($responseXml);
         }
 
         // TODO: felülvizsgálni, hogy ez minden esetben jó megoldás-e itt, illetve esetleg más típusú Exception dobása
         // Ha a result->funcCode !== OK értékkel, akkor Exception dobása
-        if ((string)$responseXml->result->funcCode !== "OK") {
+        if ($this->getFuncCode($responseXml) !== "OK") {
             throw new GeneralErrorResponse($responseXml);
         }
 
         // Fejlesztés idő alatt előfordult, hogy funcCode === OK, de a service nem megy
-        if (!empty($responseXml->result->message) and preg_match("/endpoint is currently down/", $responseXml->result->message)) {
+        $message = $this->getMessage($responseXml);
+        if (!empty($message) and preg_match("/endpoint is currently down/", $message)) {
             throw new GeneralErrorResponse($responseXml);
         }
 
@@ -115,7 +116,27 @@ class Connector implements ConnectorInterface {
             return null;
         }
 
-        return simplexml_load_string($result);
+        $xml = new \DOMDocument();
+        $xml->loadXML($result);
+        return $xml;
+    }
+
+    private function getFuncCode(\DOMDocument $xml) {
+        $result = $xml->getElementsByTagName('result')->item(0);
+        $funcCode = $result->getElementsByTagName('funcCode')->item(0);
+        if ($funcCode) {
+            return $funcCode->nodeValue;
+        }
+        return null;
+    }
+
+    private function getMessage(\DOMDocument $xml) {
+        $result = $xml->getElementsByTagName('result')->item(0);
+        $message = $result->getElementsByTagName('message')->item(0);
+        if ($message) {
+            return $message->nodeValue;
+        }
+        return null;
     }
 
 }
