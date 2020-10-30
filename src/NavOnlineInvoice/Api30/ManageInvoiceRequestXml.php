@@ -4,8 +4,8 @@ namespace NavOnlineInvoice\Api30;
 
 use NavOnlineInvoice\Util;
 
-class ManageInvoiceRequestXml extends BaseRequestXml {
-
+class ManageInvoiceRequestXml extends BaseRequestXml
+{
     protected $invoiceOperations;
     protected $token;
 
@@ -22,7 +22,6 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
         parent::__construct("ManageInvoiceRequest", $config);
     }
 
-
     protected function createXml()
     {
         parent::createXml();
@@ -30,12 +29,10 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
         $this->addInvoiceOperations();
     }
 
-
     protected function addToken()
     {
         $this->xml->addChild("exchangeToken", $this->token);
     }
-
 
     protected function addInvoiceOperations()
     {
@@ -55,7 +52,6 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
         }
     }
 
-
     /**
      * Aláírás hash értékének számításához string-ek összefűzése és visszaadása
      *
@@ -71,5 +67,4 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
 
         return $string;
     }
-
 }

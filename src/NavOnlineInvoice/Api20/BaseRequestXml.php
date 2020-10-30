@@ -15,13 +15,15 @@ class BaseRequestXml extends BaseRequestXmlAbstract
      *
      * Kapcsolódó fejezet: 1.5 A requestSignature számítása
      */
-    protected function getRequestSignatureHash() {
+    protected function getRequestSignatureHash()
+    {
         $string = $this->getRequestSignatureString();
         $hash = Util::sha3dash512($string);
         return $hash;
     }
 
-    protected function getInitialXmlString() {
+    protected function getInitialXmlString()
+    {
         return '<?xml version="1.0" encoding="UTF-8"?><' . $this->rootName . ' xmlns="http://schemas.nav.gov.hu/OSA/2.0/api"></' . $this->rootName . '>';
     }
 }

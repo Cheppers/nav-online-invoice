@@ -4,38 +4,38 @@ namespace NavOnlineInvoice\Api20;
 
 use NavOnlineInvoice\Util;
 
-class ManageInvoiceRequestXml extends BaseRequestXml {
-
+class ManageInvoiceRequestXml extends BaseRequestXml
+{
     protected $invoiceOperations;
     protected $token;
-
 
     /**
      * @param Config $config
      * @param InvoiceOperations $invoiceOperations
      * @param string $token
      */
-    function __construct($config, $invoiceOperations, $token) {
+    function __construct($config, $invoiceOperations, $token)
+    {
         $this->invoiceOperations = $invoiceOperations;
         $this->token = $token;
 
         parent::__construct("ManageInvoiceRequest", $config);
     }
 
-
-    protected function createXml() {
+    protected function createXml()
+    {
         parent::createXml();
         $this->addToken();
         $this->addInvoiceOperations();
     }
 
-
-    protected function addToken() {
+    protected function addToken()
+    {
         $this->xml->addChild("exchangeToken", $this->token);
     }
 
-
-    protected function addInvoiceOperations() {
+    protected function addInvoiceOperations()
+    {
         $operationsXml = $this->xml->addChild("invoiceOperations");
 
         // NOTE: the compression is currently not supported
@@ -52,13 +52,13 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
         }
     }
 
-
     /**
      * Aláírás hash értékének számításához string-ek összefűzése és visszaadása
      *
      * Kapcsolódó fejezet: 1.5 A requestSignature számítása
      */
-    protected function getRequestSignatureString() {
+    protected function getRequestSignatureString()
+    {
         $string = parent::getRequestSignatureString();
 
         foreach ($this->invoiceOperations->getInvoices() as $invoice) {
@@ -67,5 +67,4 @@ class ManageInvoiceRequestXml extends BaseRequestXml {
 
         return $string;
     }
-
 }

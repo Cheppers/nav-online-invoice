@@ -15,20 +15,23 @@ class ManageAnnulmentRequestXml extends BaseRequestXml
      * @param AnnulmentOperations $annulmentOperations
      * @param string $token
      */
-    function __construct($config, $annulmentOperations, $token) {
+    function __construct($config, $annulmentOperations, $token)
+    {
         $this->annulmentOperations = $annulmentOperations;
         $this->token = $token;
 
         parent::__construct("ManageAnnulmentRequest", $config);
     }
 
-    protected function createXml() {
+    protected function createXml()
+    {
         parent::createXml();
         $this->addToken();
         $this->addAnnulmentOperations();
     }
 
-    protected function addToken() {
+    protected function addToken()
+    {
         $this->xml->addChild("exchangeToken", $this->token);
     }
 
