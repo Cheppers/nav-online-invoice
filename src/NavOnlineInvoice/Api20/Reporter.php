@@ -13,8 +13,7 @@ class Reporter extends ReporterAbstract
         $requestXml = new TokenExchangeRequestXml($this->config);
         $responseXml = $this->connector->post("/tokenExchange", $requestXml);
 
-        $encodedToken = $responseXml->getElementsByTagName('encodedExchangeToken')->item(0);
-        $encodedToken = $encodedToken ? $encodedToken->nodeValue : null;
+        $encodedToken = (string)$responseXml->encodedExchangeToken;
         $token = $this->decodeToken($encodedToken);
 
         return $token;
@@ -46,8 +45,7 @@ class Reporter extends ReporterAbstract
         $requestXml = new ManageInvoiceRequestXml($this->config, $invoiceOperations, $this->token);
         $responseXml = $this->connector->post("/manageInvoice", $requestXml);
 
-        $transactionId = $responseXml->getElementsByTagName('transactionId')->item(0);
-        return $transactionId ? $transactionId->nodeValue : null;
+        return (string)$responseXml->transactionId;
     }
 
     public function manageAnnulment($annulmentOperations, &$requestXmlString = '')
@@ -61,8 +59,7 @@ class Reporter extends ReporterAbstract
         
         $requestXmlString = $requestXml->asXML();
 
-        $transactionId = $responseXml->getElementsByTagName('transactionId')->item(0);
-        return $transactionId ? $transactionId->nodeValue : null;
+        return (string)$responseXml->transactionId;
     }
 
     /**
@@ -73,14 +70,14 @@ class Reporter extends ReporterAbstract
      *
      * @param string $invoiceNumber Számla sorszám
      * @param string $invoiceDirection Számla iránya: INBOUND|OUTBOUND
-     * @return \DOMNode  $queryResultsXml A válasz XML queryResults része
+     * @return \SimpleXMLElement  $queryResultsXml A válasz XML queryResults része
      */
     public function queryInvoiceData($invoiceNumber, $invoiceDirection)
     {
         $requestXml = new QueryInvoiceDataRequestXml($this->config, $invoiceNumber, $invoiceDirection);
         $responseXml = $this->connector->post("/queryInvoiceData", $requestXml);
 
-        return $responseXml->getElementsByTagName('invoiceDataResult')->item(0);
+        return $responseXml->invoiceDataResult;
     }
 
     /**
@@ -97,6 +94,7 @@ class Reporter extends ReporterAbstract
     {
         $requestXml = new QueryInvoiceDigestRequestXml($this->config, $invoiceDirection, $queryData, $page);
         $responseXml = $this->connector->post('/queryInvoiceDigest', $requestXml);
+
         return $responseXml->invoiceDigestResult;
     }
 
@@ -104,6 +102,7 @@ class Reporter extends ReporterAbstract
     {
         $requestXml = new QueryInvoiceChainDigestRequestXml($this->config, $queryData, $page);
         $responseXml = $this->connector->post('/queryInvoiceChainDigest', $requestXml);
+
         return $responseXml->invoiceChainDigestResult;
     }
 }

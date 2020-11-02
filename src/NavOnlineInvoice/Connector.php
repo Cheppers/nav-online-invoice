@@ -25,7 +25,7 @@ class Connector implements ConnectorInterface {
      *
      * @param  string                   $url
      * @param  string|\SimpleXMLElement $requestXml
-     * @return \DOMDocument
+     * @return \SimpleXMLElement
      * @throws \NavOnlineInvoice\CurlError
      * @throws \NavOnlineInvoice\HttpResponseError
      * @throws \NavOnlineInvoice\GeneralExceptionResponse
@@ -55,28 +55,31 @@ class Connector implements ConnectorInterface {
 
         $responseXml = $this->parseResponse($result);
 
+        $domXml = new \DOMDocument();
+        $domXml->loadXML($responseXml->asXML());
+
         if (!$responseXml) {
             throw new HttpResponseError($result, $httpStatusCode);
         }
 
-        if ($responseXml->documentElement->localName === "GeneralExceptionResponse") {
-            throw new GeneralExceptionResponse($responseXml);
+        if ($domXml->documentElement->localName === "GeneralExceptionResponse") {
+            throw new GeneralExceptionResponse($domXml);
         }
 
-        if ($responseXml->documentElement->localName === "GeneralErrorResponse") {
-            throw new GeneralErrorResponse($responseXml);
+        if ($domXml->documentElement->localName === "GeneralErrorResponse") {
+            throw new GeneralErrorResponse($domXml);
         }
 
         // TODO: felülvizsgálni, hogy ez minden esetben jó megoldás-e itt, illetve esetleg más típusú Exception dobása
         // Ha a result->funcCode !== OK értékkel, akkor Exception dobása
-        if ($this->getFuncCode($responseXml) !== "OK") {
-            throw new GeneralErrorResponse($responseXml);
+        if ($this->getFuncCode($domXml) !== "OK") {
+            throw new GeneralErrorResponse($domXml);
         }
 
         // Fejlesztés idő alatt előfordult, hogy funcCode === OK, de a service nem megy
-        $message = $this->getMessage($responseXml);
+        $message = $this->getMessage($domXml);
         if (!empty($message) and preg_match("/endpoint is currently down/", $message)) {
-            throw new GeneralErrorResponse($responseXml);
+            throw new GeneralErrorResponse($domXml);
         }
 
         return $responseXml;
@@ -116,9 +119,7 @@ class Connector implements ConnectorInterface {
             return null;
         }
 
-        $xml = new \DOMDocument();
-        $xml->loadXML($result);
-        return $xml;
+        return simplexml_load_string($result);
     }
 
     private function getFuncCode(\DOMDocument $xml) {
