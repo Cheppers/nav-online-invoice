@@ -16,23 +16,22 @@ use NavOnlineInvoice\TokenExchangeRequestXml;
 use NavOnlineInvoice\Util;
 use NavOnlineInvoice\Xsd;
 
-abstract class Reporter {
-
+abstract class Reporter
+{
     protected $connector;
     protected $config;
     protected $token;
-
 
     /**
      *
      *
      * @param Config $config    Config object (felhasználó adatok, szoftver adatok, URL, stb.)
      */
-    function __construct($config) {
+    function __construct($config)
+    {
         $this->config = $config;
         $this->connector = new Connector($config);
     }
-
 
     /**
      * Egyedi connector osztály beállítása.
@@ -41,10 +40,10 @@ abstract class Reporter {
      *
      * @param ConnectorInterface $connector
      */
-    public function setConnector(ConnectorInterface $connector) {
+    public function setConnector(ConnectorInterface $connector)
+    {
         $this->connector = $connector;
     }
-
 
     /**
      * Egyedi connector osztály kikérése.
@@ -53,28 +52,28 @@ abstract class Reporter {
      *
      * @return ConnectorInterface
      */
-    public function getConnector() {
+    public function getConnector()
+    {
         return $this->connector;
     }
-
 
     /**
      * Token értékének beállítása.
      */
-    public function setToken(string $token) {
+    public function setToken(string $token)
+    {
         $this->token = $token;
     }
-
 
     /**
      * Token értékének visszaadása.
      *
      * @return string
      */
-    public function getToken() {
+    public function getToken()
+    {
         return $this->token;
     }
-
 
     /**
      * manageInvoice operáció (1.9.1 fejezet)
@@ -106,7 +105,8 @@ abstract class Reporter {
      * @return bool|\SimpleXMLElement     Nem létező adószám esetén `null`, érvénytelen adószám esetén `false` a visszatérési érték, valid adószám estén
      *                                      pedig a válasz XML taxpayerData része (SimpleXMLElement), mely a nevet és címadatokat tartalmazza.
      */
-    public function queryTaxpayer($taxNumber) {
+    public function queryTaxpayer($taxNumber)
+    {
         $requestXml = new QueryTaxpayerRequestXml($this->config, $taxNumber);
         $responseXml = $this->connector->post("/queryTaxpayer", $requestXml);
 
@@ -125,7 +125,6 @@ abstract class Reporter {
         return $responseXml->taxpayerData;
     }
 
-
     /**
      * Token kérése manageInvoice művelethez.
      *
@@ -136,7 +135,8 @@ abstract class Reporter {
      *
      * @return string       Token
      */
-    public function tokenExchange() {
+    public function tokenExchange()
+    {
         $requestXml = new TokenExchangeRequestXml($this->config);
         $responseXml = $this->connector->post("/tokenExchange", $requestXml);
 
@@ -146,11 +146,10 @@ abstract class Reporter {
         return $token;
     }
 
-
-    protected function decodeToken($encodedToken) {
+    protected function decodeToken($encodedToken)
+    {
         return Util::aes128_decrypt($encodedToken, $this->config->user["exchangeKey"]);
     }
-
 
     /**
      * Paraméterben átadott adat XML-t validálja az XSD-vel és hiba esetén string-ként visszaadja a hibát.
@@ -159,7 +158,8 @@ abstract class Reporter {
      * @param  \SimpleXMLElement $xml   Számla XML
      * @return null|string             Hibaüzenet, vagy `null`, ha helyes az XML
      */
-    public function getInvoiceValidationError($xml) {
+    public function getInvoiceValidationError($xml)
+    {
         try {
             Xsd::validate($xml->asXML(), $this->config->getDataXsdFilename());
         } catch (XsdValidationError $ex) {

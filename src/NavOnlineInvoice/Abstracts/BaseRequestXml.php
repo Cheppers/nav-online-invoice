@@ -5,8 +5,8 @@ namespace NavOnlineInvoice\Abstracts;
 use NavOnlineInvoice\Util;
 use NavOnlineInvoice\Xsd;
 
-abstract class BaseRequestXml {
-
+abstract class BaseRequestXml
+{
     protected $rootName;
     protected $config;
 
@@ -18,22 +18,22 @@ abstract class BaseRequestXml {
     protected $requestId;
     protected $timestamp;
 
-
     /**
      * Request XML készítése
      *
      * @param string $rootName  Root XML elem neve
      * @param Config $config    Konfigurációt tartalmazó objektum
      */
-    function __construct($rootName, $config) {
+    function __construct($rootName, $config)
+    {
         $this->rootName = $rootName;
         $this->config = $config;
 
         $this->createXml();
     }
 
-
-    protected function createXml() {
+    protected function createXml()
+    {
         $this->requestId = $this->generateRequestId();
         $this->timestamp = $this->getTimestamp();
 
@@ -42,7 +42,6 @@ abstract class BaseRequestXml {
         $this->addUser();
         $this->addSoftware();
     }
-
 
     /**
      * Egyedi request ID generálása
@@ -59,20 +58,21 @@ abstract class BaseRequestXml {
      *
      * @return string
      */
-    protected function generateRequestId() {
+    protected function generateRequestId()
+    {
         $id = "RID" . microtime() . mt_rand(10000, 99999);
         $id = preg_replace("/[^A-Z0-9]/", "", $id);
         $id = substr($id, 0, 30);
         return $id;
     }
 
-
     /**
      * A kérés kliens oldali időpontja UTC-ben, ezredmásodperccel
      *
      * @return string
      */
-    public static function getTimestamp() {
+    public static function getTimestamp()
+    {
         $now = microtime(true);
         $milliseconds = round(($now - floor($now)) * 1000);
         $milliseconds = min($milliseconds, 999);
@@ -80,18 +80,18 @@ abstract class BaseRequestXml {
         return gmdate("Y-m-d\TH:i:s", $now) . sprintf(".%03dZ", $milliseconds);
     }
 
-
-    protected function createXmlObject() {
+    protected function createXmlObject()
+    {
         $this->xml = new \SimpleXMLElement($this->getInitialXmlString());
     }
 
-
-    protected function getInitialXmlString() {
+    protected function getInitialXmlString()
+    {
         return '<?xml version="1.0" encoding="UTF-8"?><' . $this->rootName . ' xmlns="http://schemas.nav.gov.hu/OSA/1.0/api"></' . $this->rootName . '>';
     }
 
-
-    protected function addHeader() {
+    protected function addHeader()
+    {
         $header = $this->xml->addChild("header");
 
         $header->addChild("requestId", $this->requestId);
@@ -100,8 +100,8 @@ abstract class BaseRequestXml {
         $header->addChild("headerVersion", "1.0");
     }
 
-
-    protected function addUser() {
+    protected function addUser()
+    {
         $user = $this->xml->addChild("user");
 
         $passwordHash = Util::sha512($this->config->user["password"]);
@@ -113,8 +113,8 @@ abstract class BaseRequestXml {
         $user->addChild("requestSignature", $signature);
     }
 
-
-    protected function addSoftware() {
+    protected function addSoftware()
+    {
         if (!$this->config->software) {
             return;
         }
@@ -126,7 +126,6 @@ abstract class BaseRequestXml {
         }
     }
 
-
     /**
      * Aláírás generálása.
      *
@@ -135,12 +134,12 @@ abstract class BaseRequestXml {
      *
      * Kapcsolódó fejezet: 1.5 A requestSignature számítása
      */
-    protected function getRequestSignatureHash() {
+    protected function getRequestSignatureHash()
+    {
         $string = $this->getRequestSignatureString();
         $hash = Util::sha512($string);
         return $hash;
     }
-
 
     /**
      * Aláírás hash értékének számításához string-ek összefűzése és visszaadása
@@ -150,7 +149,8 @@ abstract class BaseRequestXml {
      *
      * Kapcsolódó fejezet: 1.5 A requestSignature számítása
      */
-    protected function getRequestSignatureString() {
+    protected function getRequestSignatureString()
+    {
         $string = "";
 
         // requestId értéke
@@ -165,33 +165,32 @@ abstract class BaseRequestXml {
         return $string;
     }
 
-
     /**
      * XML objektum lekérése
      *
      * @return \SimpleXMLElement
      */
-    public function getXML() {
+    public function getXML()
+    {
         return $this->xml;
     }
-
 
     /**
      * XML adat lekérése string-ként
      *
      * @return string
      */
-    public function asXML() {
+    public function asXML()
+    {
         return $this->xml->asXML();
     }
-
 
     /**
      * A request XML-t validálja a NAV által biztosított 'invoiceApi.xsd'-vel.
      * Hiba esetén XsdValidationError exception-t dob.
      */
-    public function validateSchema() {
+    public function validateSchema()
+    {
         Xsd::validate($this->asXML(), $this->config->getApiXsdFilename());
     }
-
 }
