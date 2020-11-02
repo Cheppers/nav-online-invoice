@@ -4,14 +4,8 @@ namespace NavOnlineInvoice\Abstracts;
 
 use NavOnlineInvoice\Connector;
 use NavOnlineInvoice\ConnectorInterface;
-use NavOnlineInvoice\Exceptions\UnsupportedMethodException;
 use NavOnlineInvoice\Exceptions\XsdValidationError;
 use NavOnlineInvoice\InvoiceOperations;
-//use NavOnlineInvoice\ManageInvoiceRequestXml;
-use NavOnlineInvoice\QueryInvoiceDataRequestXml;
-use NavOnlineInvoice\QueryInvoiceStatusRequestXml;
-use NavOnlineInvoice\QueryTaxpayerRequestXml;
-use NavOnlineInvoice\QueryTransactionStatusRequestXml;
 use NavOnlineInvoice\TokenExchangeRequestXml;
 use NavOnlineInvoice\Util;
 use NavOnlineInvoice\Xsd;
@@ -96,36 +90,6 @@ abstract class Reporter
     abstract public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE");
 
     /**
-     * queryTaxpayer operáció (1.9.4 fejezet)
-     *
-     * A /queryTaxpayer belföldi adószám validáló operáció, mely a számlakiállítás folyamatába építve képes
-     * a megadott adószám valódiságáról és érvényességéről a NAV adatbázisa alapján adatot szolgáltatni.
-     *
-     * @param  string $taxNumber            Adószám, pattern: [0-9]{8}
-     * @return bool|\SimpleXMLElement     Nem létező adószám esetén `null`, érvénytelen adószám esetén `false` a visszatérési érték, valid adószám estén
-     *                                      pedig a válasz XML taxpayerData része (SimpleXMLElement), mely a nevet és címadatokat tartalmazza.
-     */
-    public function queryTaxpayer($taxNumber)
-    {
-        $requestXml = new QueryTaxpayerRequestXml($this->config, $taxNumber);
-        $responseXml = $this->connector->post("/queryTaxpayer", $requestXml);
-
-        // 1.9.4.2 fejezet alapján (QueryTaxpayerResponse) a taxpayerValidity tag csak akkor kerül a válaszba, ha a lekérdezett adószám létezik.
-        // Nem létező adószámra csak egy <funcCode>OK</funcCode> kerül visszaadásra (funcCode===OK megléte a Connector-ban ellenőrizve van).
-        if (!isset($responseXml->taxpayerValidity)) {
-            return null;
-        }
-
-        // taxpayerValidity értéke lehet false is, ha az adószám létezik, de nem érvényes
-        if (empty($responseXml->taxpayerValidity) or $responseXml->taxpayerValidity === "false") {
-            return false;
-        }
-
-        // Az adószám valid, adózó adatainak visszaadása
-        return $responseXml->taxpayerData;
-    }
-
-    /**
      * Token kérése manageInvoice művelethez.
      *
      * Ezt a metódust lehet használni tesztelésre is, hogy a megadott felhasználói adatok helyesek-e/a NAV szervere visszatér-e valami válasszal.
@@ -135,16 +99,7 @@ abstract class Reporter
      *
      * @return string       Token
      */
-    public function tokenExchange()
-    {
-        $requestXml = new TokenExchangeRequestXml($this->config);
-        $responseXml = $this->connector->post("/tokenExchange", $requestXml);
-
-        $encodedToken = (string)$responseXml->encodedExchangeToken;
-        $token = $this->decodeToken($encodedToken);
-
-        return $token;
-    }
+    abstract public function tokenExchange();
 
     protected function decodeToken($encodedToken)
     {

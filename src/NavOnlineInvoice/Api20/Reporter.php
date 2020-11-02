@@ -4,7 +4,6 @@ namespace NavOnlineInvoice\Api20;
 
 use NavOnlineInvoice\Abstracts\Reporter as ReporterAbstract;
 use NavOnlineInvoice\InvoiceOperations;
-use NavOnlineInvoice\TokenExchangeRequestXml;
 
 class Reporter extends ReporterAbstract
 {
