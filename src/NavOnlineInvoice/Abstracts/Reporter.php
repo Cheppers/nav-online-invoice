@@ -70,6 +70,20 @@ abstract class Reporter
     }
 
     /**
+     * Token kérése manageInvoice művelethez.
+     *
+     * Ezt a metódust lehet használni tesztelésre is, hogy a megadott felhasználói adatok helyesek-e/a NAV szervere visszatér-e valami válasszal.
+     *
+     * Megjegyzés: csak a token kerül visszaadásra, az érvényességi idő nem. Ennek oka, hogy a tokent csak egy kéréshez (egyszer) lehet használni
+     * NAV fórumon elhangzottak alapján (megerősítés szükséges!), és ez az egyszeri felhasználás azonnal megtörténik a token lekérése után (manageInvoice hívás).
+     *
+     * @return string       Token
+     */
+    abstract public function tokenExchange();
+
+    abstract public function queryTransactionStatus($transactionId, $returnOriginalRequest = false);
+
+    /**
      * manageInvoice operáció (1.9.1 fejezet)
      *
      * A /manageInvoice a számla adatszolgáltatás beküldésére szolgáló operáció, ezen keresztül van
@@ -89,17 +103,13 @@ abstract class Reporter
      */
     abstract public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE");
 
-    /**
-     * Token kérése manageInvoice művelethez.
-     *
-     * Ezt a metódust lehet használni tesztelésre is, hogy a megadott felhasználói adatok helyesek-e/a NAV szervere visszatér-e valami válasszal.
-     *
-     * Megjegyzés: csak a token kerül visszaadásra, az érvényességi idő nem. Ennek oka, hogy a tokent csak egy kéréshez (egyszer) lehet használni
-     * NAV fórumon elhangzottak alapján (megerősítés szükséges!), és ez az egyszeri felhasználás azonnal megtörténik a token lekérése után (manageInvoice hívás).
-     *
-     * @return string       Token
-     */
-    abstract public function tokenExchange();
+    abstract public function manageAnnulment($annulmentOperations, &$requestXmlString = '');
+
+    abstract public function queryInvoiceData($invoiceNumber, $invoiceDirection);
+
+    abstract public function queryInvoiceDigest($invoiceDirection, $queryData, $page = 1);
+
+    abstract public function queryInvoiceChainDigest($queryData, $page = 1);
 
     protected function decodeToken($encodedToken)
     {
