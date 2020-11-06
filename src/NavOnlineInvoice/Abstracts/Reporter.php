@@ -6,7 +6,6 @@ use NavOnlineInvoice\Connector;
 use NavOnlineInvoice\ConnectorInterface;
 use NavOnlineInvoice\Exceptions\XsdValidationError;
 use NavOnlineInvoice\InvoiceOperations;
-use NavOnlineInvoice\TokenExchangeRequestXml;
 use NavOnlineInvoice\Util;
 use NavOnlineInvoice\Xsd;
 

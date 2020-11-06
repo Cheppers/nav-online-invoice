@@ -3,6 +3,7 @@
 namespace NavOnlineInvoice\Api30;
 
 use NavOnlineInvoice\Abstracts\Reporter as ReporterAbstract;
+use NavOnlineInvoice\Exceptions\TokenExchangeError;
 use NavOnlineInvoice\InvoiceOperations;
 
 class Reporter extends ReporterAbstract
@@ -11,6 +12,10 @@ class Reporter extends ReporterAbstract
     {
         $requestXml = new TokenExchangeRequestXml($this->config);
         $responseXml = $this->connector->post("/tokenExchange", $requestXml);
+
+        if (!$responseXml) {
+            throw new TokenExchangeError('Empty NAV Response');
+        }
 
         $encodedToken = $this->getDomValue($responseXml, 'encodedExchangeToken');
 
