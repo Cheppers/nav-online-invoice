@@ -4,6 +4,7 @@ namespace NavOnlineInvoice\Abstracts;
 
 use NavOnlineInvoice\Connector;
 use NavOnlineInvoice\ConnectorInterface;
+use NavOnlineInvoice\Exceptions\TokenExchangeError;
 use NavOnlineInvoice\Exceptions\UnsupportedMethodException;
 use NavOnlineInvoice\Exceptions\XsdValidationError;
 use NavOnlineInvoice\InvoiceOperations;
@@ -139,6 +140,10 @@ abstract class Reporter {
     public function tokenExchange() {
         $requestXml = new TokenExchangeRequestXml($this->config);
         $responseXml = $this->connector->post("/tokenExchange", $requestXml);
+
+        if (!$responseXml) {
+            throw new TokenExchangeError('Empty NAV Response');
+        }
 
         $encodedToken = (string)$responseXml->encodedExchangeToken;
         $token = $this->decodeToken($encodedToken);
