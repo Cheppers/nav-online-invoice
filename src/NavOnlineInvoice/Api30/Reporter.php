@@ -72,7 +72,7 @@ class Reporter extends ReporterAbstract
         $requestXml = new QueryInvoiceDataRequestXml($this->config, $invoiceNumber, $invoiceDirection);
         $responseXml = $this->connector->post("/queryInvoiceData", $requestXml);
 
-        return $this->getDomObject($responseXml, 'invoiceDataResult');
+        return $responseXml;
     }
 
     public function queryInvoiceDigest($invoiceDirection, $queryData, $page = 1)
@@ -80,7 +80,7 @@ class Reporter extends ReporterAbstract
         $requestXml = new QueryInvoiceDigestRequestXml($this->config, $invoiceDirection, $queryData, $page);
         $responseXml = $this->connector->post('/queryInvoiceDigest', $requestXml);
 
-        return $this->getDomObject($responseXml, 'invoiceDigestResult');
+        return $responseXml;
     }
 
     public function queryInvoiceChainDigest($queryData, $page = 1)
@@ -88,7 +88,7 @@ class Reporter extends ReporterAbstract
         $requestXml = new QueryInvoiceChainDigestRequestXml($this->config, $queryData, $page);
         $responseXml = $this->connector->post('/queryInvoiceChainDigest', $requestXml);
 
-        return $this->getDomObject($responseXml, 'invoiceChainDigestResult');
+        return $responseXml;
     }
 
     private function getDomValue(\SimpleXMLElement $simpleXMLElement, string $tagName)
