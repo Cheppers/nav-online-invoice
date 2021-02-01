@@ -4,7 +4,7 @@ namespace NavOnlineInvoice\Api30;
 
 use NavOnlineInvoice\Abstracts\Reporter as ReporterAbstract;
 use NavOnlineInvoice\Exceptions\TokenExchangeError;
-use NavOnlineInvoice\InvoiceOperations;
+use NavOnlineInvoice\Api30\InvoiceOperations;
 
 class Reporter extends ReporterAbstract
 {
@@ -32,15 +32,19 @@ class Reporter extends ReporterAbstract
         return $responseXml;
     }
 
-    public function manageInvoice($invoiceOperationsOrXml, $operation = "CREATE")
-    {
+    public function manageInvoice(
+        $invoiceOperationsOrXml,
+        $operation = "CREATE",
+        $electronicInvoice = false,
+        $invoiceHash = null
+    ) {
         // Ha nem InvoiceOperations példányt adtak át, akkor azzá konvertáljuk
         if ($invoiceOperationsOrXml instanceof InvoiceOperations) {
             $invoiceOperations = $invoiceOperationsOrXml;
         } else {
             $invoiceOperations = new InvoiceOperations($this->config);
 
-            $invoiceOperations->add($invoiceOperationsOrXml, $operation);
+            $invoiceOperations->add($invoiceOperationsOrXml, $operation, $electronicInvoice, $invoiceHash);
         }
 
         if (empty($this->token)) {

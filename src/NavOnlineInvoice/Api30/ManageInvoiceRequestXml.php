@@ -49,6 +49,16 @@ class ManageInvoiceRequestXml extends BaseRequestXml
 
             $invoiceXml->addChild("invoiceOperation", $invoice["operation"]);
             $invoiceXml->addChild("invoiceData", $invoice["invoice"]);
+
+            $electronicInvoiceHash = $invoice["invoiceHash"];
+            if ($invoice["electronicInvoice"]) {
+                $electronicInvoiceHash = Util::sha3dash512($invoice["invoice"]);
+            }
+
+            if ($electronicInvoiceHash) {
+                $invoiceXml->addChild("electronicInvoiceHash", $electronicInvoiceHash)
+                    ->addAttribute("cryptoType", "SHA3-512");
+            }
         }
     }
 

@@ -4,7 +4,7 @@ namespace NavOnlineInvoice\Api20;
 
 use NavOnlineInvoice\Abstracts\Reporter as ReporterAbstract;
 use NavOnlineInvoice\Exceptions\TokenExchangeError;
-use NavOnlineInvoice\InvoiceOperations;
+use NavOnlineInvoice\Api20\InvoiceOperations;
 
 class Reporter extends ReporterAbstract
 {
