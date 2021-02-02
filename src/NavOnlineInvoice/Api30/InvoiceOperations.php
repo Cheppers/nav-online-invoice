@@ -3,6 +3,7 @@
 namespace NavOnlineInvoice\Api30;
 use Exception;
 use NavOnlineInvoice\Abstracts\InvoiceOperations as InvoiceOperationsAbstract;
+use NavOnlineInvoice\Xsd;
 
 class InvoiceOperations extends InvoiceOperationsAbstract
 {
