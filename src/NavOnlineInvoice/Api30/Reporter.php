@@ -21,6 +21,10 @@ class Reporter extends ReporterAbstract
 
         $token = $this->decodeToken($encodedToken);
 
+        if (empty($token)) {
+            throw new TokenExchangeError('Couldn\'t decrypt token with exchangeKey');
+        }
+
         return $token;
     }
 
