@@ -4,9 +4,8 @@ namespace NavOnlineInvoice;
 use DOMDocument;
 use NavOnlineInvoice\Exceptions\XsdValidationError;
 
-
-class Xsd {
-
+class Xsd
+{
     /**
      * A megadott XML-t (string) ellenőrzi a megadott XSD sémával.
      * Hiba esetén XsdValidationError exception-t dob.
@@ -15,7 +14,8 @@ class Xsd {
      * @param  string $xsdFilename
      * @throws XsdValidationError
      */
-    public static function validate($xmlString, $xsdFilename) {
+    public static function validate($xmlString, $xsdFilename)
+    {
         $doc = new DOMDocument();
         $doc->loadXML($xmlString);
 
